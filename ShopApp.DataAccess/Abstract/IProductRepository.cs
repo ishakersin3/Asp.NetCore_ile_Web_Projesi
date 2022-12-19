@@ -9,8 +9,10 @@ namespace ShopApp.DataAccess.Abstract
 {
     public interface IProductRepository:IRepository<Product>
     {
-        Product GetProductDetails(int id);
-        List<Product> GetPopulerProducts();
-        List<Product> GetTop5Products();
+        Product GetProductDetails(string url);
+        List<Product> GetProductsByCategory(string name,int page,int pageSize);
+        List<Product> GetSearchResult(string SearchString);
+        List<Product> GetHomePageProducts();
+        int GetCountByCategory(string category);
     }
 }

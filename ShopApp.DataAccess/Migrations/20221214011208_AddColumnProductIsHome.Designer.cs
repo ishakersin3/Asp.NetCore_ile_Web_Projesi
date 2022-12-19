@@ -11,8 +11,8 @@ using ShopApp.DataAccess.Concrete.EfCore;
 namespace ShopApp.DataAccess.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    [Migration("20221212110616_InitalCreate")]
-    partial class InitalCreate
+    [Migration("20221214011208_AddColumnProductIsHome")]
+    partial class AddColumnProductIsHome
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace ShopApp.DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
                     b.HasKey("CategoryId");
@@ -49,11 +52,17 @@ namespace ShopApp.DataAccess.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsHome")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.Property<double?>("Price")
                         .HasColumnType("REAL");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ProductId");
 
@@ -77,21 +86,21 @@ namespace ShopApp.DataAccess.Migrations
 
             modelBuilder.Entity("ShopApp.Entity.ProductCategory", b =>
                 {
-                    b.HasOne("ShopApp.Entity.Category", "Category")
+                    b.HasOne("ShopApp.Entity.Category", "category")
                         .WithMany("ProductCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShopApp.Entity.Product", "Product")
+                    b.HasOne("ShopApp.Entity.Product", "product")
                         .WithMany("ProductCategories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.Navigation("category");
 
-                    b.Navigation("Product");
+                    b.Navigation("product");
                 });
 
             modelBuilder.Entity("ShopApp.Entity.Category", b =>

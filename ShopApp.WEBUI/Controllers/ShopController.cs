@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using ShopApp.Business.Abstract;
 using ShopApp.Entity;
 using ShopApp.WEBUI.Models;
@@ -16,21 +17,29 @@ namespace ShopApp.WEBUI.Controllers
             _productservice = productservice;
         }
 
-        public IActionResult List()
+        public IActionResult List(string category,int page=1)
         {
+            const int pageSize = 2;
             var productviewmodel = new ProductListViewModels()
             {
-                Products = _productservice.GetAll()
+                pageInfo = new PageInfo()
+                {
+                    TotalItems = _productservice.GetCountByCategory(category),
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    CurrentCategory = category
+                },
+                Products = _productservice.GetProductsByCategory(category,page,pageSize)
             };
             return View(productviewmodel);
         }
-        public IActionResult Detail(int? id)
+        public IActionResult Detail(string url)
         {
-            if (id==null)
+            if (url == null)
             {
                 return NotFound();
             }
-            Product product = _productservice.GetProductDetails((int)id);
+            Product product = _productservice.GetProductDetails(url);
             if (product==null)
             {
                 return NotFound();
@@ -40,6 +49,15 @@ namespace ShopApp.WEBUI.Controllers
                 product= product,
                 categories = product.ProductCategories.Select(i=>i.category).ToList()
             });
+        }
+        public IActionResult Search(string q) 
+        {
+            var productviewmodel = new ProductListViewModels()
+            {              
+                Products = _productservice.GetSearchResult(q)
+            };
+            return View(productviewmodel);
+            
         }
     }
 }
