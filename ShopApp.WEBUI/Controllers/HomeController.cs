@@ -2,7 +2,7 @@
 using Microsoft.JSInterop;
 using ShopApp.Business.Abstract;
 using ShopApp.DataAccess.Abstract;
-using ShopApp.WEBUI.ViewModels;
+using ShopApp.WEBUI.Models;
 using System;
 using System.Collections.Generic;
 

@@ -12,13 +12,9 @@
     @await Html.PartialAsync("_navbar")
    
     
-    <main class="my-3"> 
-        <div style="margin:0 150px">
-            <div class="row">
-                <div class="col-md-12">
-                    @RenderBody()
-                </div>
-            </div>
+    <main class="my-3">
+        <div class="container">
+            @RenderBody()
         </div>
      </main>
         <footer class="py-5 bg-dark text-white text-center">

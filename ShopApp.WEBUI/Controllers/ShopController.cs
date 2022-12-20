@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ShopApp.Business.Abstract;
 using ShopApp.Entity;
 using ShopApp.WEBUI.Models;
-using ShopApp.WEBUI.ViewModels;
 using System.Linq;
 
 namespace ShopApp.WEBUI.Controllers

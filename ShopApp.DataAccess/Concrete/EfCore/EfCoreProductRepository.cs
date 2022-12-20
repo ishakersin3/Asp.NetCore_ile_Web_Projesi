@@ -65,7 +65,11 @@ namespace ShopApp.DataAccess.Concrete.EfCore
         {
             using (var context = new ShopContext())
             {
-                var products = context.Products.Where(i => i.IsApproved == true && (i.Name.ToLower().Contains(SearchString.ToLower()) || i.Description.ToLower().Contains(SearchString.ToLower()))).AsQueryable();
+                var products = context.Products.
+                    Where(i => i.IsApproved == true && 
+                    (i.Name.ToLower().Contains(SearchString.ToLower()) || 
+                    i.Description.ToLower().
+                    Contains(SearchString.ToLower()))).AsQueryable();
                 
                 return products.ToList();
             }

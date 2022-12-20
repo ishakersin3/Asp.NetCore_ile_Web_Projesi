@@ -16,8 +16,7 @@
         <div class="row">
             <div class="col">
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        <li class="page-item)"><a class="page-link" href="#">Previous</a></li>
+                    <ul class="pagination">                        
                         @for (int i = 0; i <Model.pageInfo.TotalPage(); i++)
                         {
                             @if (string.IsNullOrEmpty(Model.pageInfo.CurrentCategory))
@@ -28,8 +27,7 @@
                             {
                                  <li class="page-item @(Model.pageInfo.CurrentPage==i+1?"active":"")"><a class="page-link" href="/products/@Model.pageInfo.CurrentCategory?page=@(i+1)">@(i + 1)</a></li>
                             }
-                        }                              
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        }                                                      
                     </ul>
                 </nav>
             </div>

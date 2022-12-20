@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ShopApp.WEBUI.ViewModels
+namespace ShopApp.WEBUI.Models
 {
     public class PageInfo
     {
@@ -19,6 +19,6 @@ namespace ShopApp.WEBUI.ViewModels
     public class ProductListViewModels
     {
         public PageInfo pageInfo { get; set; }
-        public List<Product> Products { get; set; }     
+        public List<Product> Products { get; set; }
     }
 }
