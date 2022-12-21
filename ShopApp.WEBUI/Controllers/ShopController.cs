@@ -45,8 +45,8 @@ namespace ShopApp.WEBUI.Controllers
             }
             return View(new ProductDetailModel
             {
-                product= product,
-                categories = product.ProductCategories.Select(i=>i.category).ToList()
+                Product = product,
+                Categories = product.ProductCategories.Select(i=>i.Category).ToList()
             });
         }
         public IActionResult Search(string q) 

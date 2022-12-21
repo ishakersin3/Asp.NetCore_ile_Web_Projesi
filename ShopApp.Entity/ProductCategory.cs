@@ -9,8 +9,8 @@ namespace ShopApp.Entity
     public class ProductCategory
     {
         public int CategoryId { get; set; } 
-        public Category category { get; set; }
+        public Category Category { get; set; }
         public int ProductId { get; set; }
-        public Product product { get; set; }
+        public Product Product { get; set; }
     }
 }

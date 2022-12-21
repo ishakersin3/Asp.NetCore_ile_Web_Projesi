@@ -50,16 +50,40 @@ namespace ShopApp.WEBUI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "adminproductlist",
-                    pattern: "admin/products",
-                    defaults: new { controller = "Admin", Action = "Productlist" }
+                   name: "adminproducts",
+                   pattern: "admin/products",
+                   defaults: new { controller = "Admin", Action = "Productlist" }
+                   );
+
+                endpoints.MapControllerRoute(
+                    name: "adminproductcreate",
+                    pattern: "admin/products/create",
+                    defaults: new { controller = "Admin", Action = "ProductCreate" }
                     );
 
                 endpoints.MapControllerRoute(
-                    name: "adminproductlist",
-                    pattern: "admin/products/{id?}",
-                    defaults: new { controller = "Admin", Action = "Edit" }
+                   name: "adminproductedit",
+                   pattern: "admin/products/{id?}",
+                   defaults: new { controller = "Admin", Action = "ProductEdit" }
+                   );
+
+                endpoints.MapControllerRoute(
+                    name: "admincategories",
+                    pattern: "admin/categories",
+                    defaults: new { controller = "Admin", Action = "Categorylist" }
                     );
+
+                endpoints.MapControllerRoute(
+                    name: "admincategorycreate",
+                    pattern: "admin/categories/create",
+                    defaults: new { controller = "Admin", Action = "CategoryCreate" }
+                    );               
+
+                endpoints.MapControllerRoute(
+                  name: "admincategorytedit",
+                  pattern: "admin/categories/{id?}",
+                  defaults: new { controller = "Admin", Action = "CategoryEdit" }
+                  );
 
                 endpoints.MapControllerRoute(
                     name: "products",

@@ -17,10 +17,16 @@ namespace ShopApp.Business.Concrete
         {
             _productRepository= productRepository;
         }
-        public void Create(Product entity)
+
+
+        public bool Create(Product entity)
         {
-            //İş Kurallarını Uygula
-            _productRepository.Create(entity);
+            if (Validation(entity))
+            {
+                _productRepository.Create(entity);
+                return true;
+            }
+            return false;
         }
 
         public void Delete(Product entity)
@@ -37,6 +43,11 @@ namespace ShopApp.Business.Concrete
         public Product GetById(int id)
         {
             return _productRepository.GetById(id);
+        }
+
+        public Product GetByIdWithCategories(int id)
+        {
+            return _productRepository.GetByIdWithCategories(id);
         }
 
         public int GetCountByCategory(string category)
@@ -67,6 +78,41 @@ namespace ShopApp.Business.Concrete
         public void Update(Product entity)
         {
             _productRepository.Update(entity);
+        }
+
+        public bool Update(Product entity, int[] categoryIds)
+        {
+            if (Validation(entity))
+            {
+                if (categoryIds.Length == 0)
+                {
+                    ErrorMessage += "Ürün İçin En Az Bir Kategori Göndermelisiniz";
+                    return false;
+                }
+                _productRepository.Update(entity, categoryIds);
+                return true;
+            }
+            return false;
+            
+        }
+        public string ErrorMessage { get ; set ; }
+
+        public bool Validation(Product entity)
+        {
+            var isvalid = true;
+            
+            if(string.IsNullOrEmpty(entity.Name))
+            {
+                ErrorMessage += "Ürün İsmi Girmelisiniz.\n";
+                isvalid = false;
+            }
+            if (entity.Price<0)
+            {
+                ErrorMessage += "Ürün Fiyatı Negatif Olamaz.\n";
+                isvalid = false;
+            }
+
+            return isvalid;
         }
     }
 }

@@ -46,14 +46,14 @@ namespace ShopApp.DataAccess.Concrete.EfCore
         };
         private static ProductCategory[] ProductCategories =
         {
-            new ProductCategory(){product = Products[0],category=Categories[0]},
-            new ProductCategory(){product = Products[0],category=Categories[2]},
-            new ProductCategory(){product = Products[1],category=Categories[0]},
-            new ProductCategory(){product = Products[1],category=Categories[2]},
-            new ProductCategory(){product = Products[2],category=Categories[0]},
-            new ProductCategory(){product = Products[2],category=Categories[2]},
-            new ProductCategory(){product = Products[3],category=Categories[0]},
-            new ProductCategory(){product = Products[3],category=Categories[2]},
+            new ProductCategory(){Product = Products[0],Category=Categories[0]},
+            new ProductCategory(){Product = Products[0],Category=Categories[2]},
+            new ProductCategory(){Product = Products[1],Category=Categories[0]},
+            new ProductCategory(){Product = Products[1],Category=Categories[2]},
+            new ProductCategory(){Product = Products[2],Category=Categories[0]},
+            new ProductCategory(){Product = Products[2],Category=Categories[2]},
+            new ProductCategory(){Product = Products[3],Category=Categories[0]},
+            new ProductCategory(){Product = Products[3],Category=Categories[2]},
         };
     }
 }
