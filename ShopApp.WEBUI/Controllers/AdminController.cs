@@ -1,24 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ShopApp.Business.Abstract;
 using ShopApp.Entity;
+using ShopApp.WEBUI.Extensions;
 using ShopApp.WEBUI.Models;
+using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShopApp.WEBUI.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
-        private void CreateMessage(string message,string alerttype)
-        {
-            var msg = new AlertMessage()
-            {
-                Message = message,
-                AlertType = alerttype
-            };
-            TempData["Message"] = JsonConvert.SerializeObject(msg);
-
-        }
 
         private IProductService _productService;
 
@@ -31,7 +28,7 @@ namespace ShopApp.WEBUI.Controllers
         public IActionResult ProductList()
         {
             return View(new ProductListViewModels { Products = _productService.GetAll() });
-        }       
+        }
         public IActionResult ProductCreate()
         {
             return View();
@@ -52,10 +49,20 @@ namespace ShopApp.WEBUI.Controllers
                 };
                 if (_productService.Create(entity))
                 {
-                    CreateMessage("kayıt eklendi","success");                   
+                    TempData.Put("message", new AlertMessage()
+                    {
+                        Title = "Kayıt Eklendi.",
+                        AlertType = "success",
+                        Message = "Kayıt Eklendi."
+                    });
                     return RedirectToAction("ProductList");
                 }
-                CreateMessage(_productService.ErrorMessage, "danger");
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title = "Hata",
+                    AlertType = "danger",
+                    Message = _productService.ErrorMessage
+                });
                 return View(product);
             }
             return View(product);
@@ -81,9 +88,9 @@ namespace ShopApp.WEBUI.Controllers
                 Price = product.Price,
                 ImageUrl = product.ImageUrl,
                 Description = product.Description,
-                IsApproved= product.IsApproved,
-                IsHome= product.IsHome,
-                SelectedCategories = product.ProductCategories.Select(x=>x.Category).ToList()
+                IsApproved = product.IsApproved,
+                IsHome = product.IsHome,
+                SelectedCategories = product.ProductCategories.Select(x => x.Category).ToList()
             };
 
             ViewBag.Categories = _categoryService.GetAll();
@@ -91,7 +98,7 @@ namespace ShopApp.WEBUI.Controllers
             return View(model);
         }
         [HttpPost]
-        public IActionResult ProductEdit(ProductModel model,int[] CategoryIds)
+        public async Task<IActionResult> ProductEdit(ProductModel model, int[] CategoryIds, IFormFile file)
         {
             if (ModelState.IsValid)
             {
@@ -103,22 +110,46 @@ namespace ShopApp.WEBUI.Controllers
                 entity.Name = model.Name;
                 entity.Url = model.Url;
                 entity.Price = model.Price;
-                entity.ImageUrl = model.ImageUrl;
-                entity.Description = model.Description;  
-                entity.IsHome= model.IsHome;
-                entity.IsApproved= model.IsApproved;
-                
+                entity.Description = model.Description;
+                entity.IsHome = model.IsHome;
+                entity.IsApproved = model.IsApproved;
+
+                if (file != null)
+                {
+                    entity.ImageUrl = file.FileName;
+                    var extention = Path.GetExtension(file.FileName);
+                    var randomName = string.Format($"{Guid.NewGuid()}{extention}");
+                    entity.ImageUrl = randomName;
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", randomName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+
                 if (_productService.Update(entity, CategoryIds))
                 {
-                    CreateMessage("Kayıt Güncellendi", "success");
+                    TempData.Put("message", new AlertMessage()
+                    {
+                        Title = "Kayıt Güncellendi.",
+                        AlertType = "success",
+                        Message = "Kayıt Güncellendi."
+                    });
                     return RedirectToAction("ProductList");
                 }
-                CreateMessage(_productService.ErrorMessage, "danger");               
+
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title = "Hata",
+                    AlertType = "danger",
+                    Message = _productService.ErrorMessage
+                });
             }
             ViewBag.Categories = _categoryService.GetAll();
             return View(model);
-                        
-            
+
+
         }
         public IActionResult DeleteProduct(int productId)
         {
@@ -136,7 +167,7 @@ namespace ShopApp.WEBUI.Controllers
             };
             TempData["Message"] = JsonConvert.SerializeObject(msg);
             return RedirectToAction("ProductList");
-           
+
         }
         public IActionResult CategoryList()
         {
@@ -153,47 +184,47 @@ namespace ShopApp.WEBUI.Controllers
         {
             if (ModelState.IsValid)
             {
-            var entity = new Category()
-            {
-                Name = category.Name,
-                Url = category.Url,
-               
-            };
-            _categoryService.Create(entity);
-            var msg = new AlertMessage()
-            {
-                Message = $"{entity.Name} İsimli Kategori Eklendi.",
-                AlertType = "success"
-            };
-            TempData["Message"] = JsonConvert.SerializeObject(msg);
-            return RedirectToAction("CategoryList");
+                var entity = new Category()
+                {
+                    Name = category.Name,
+                    Url = category.Url,
+
+                };
+                _categoryService.Create(entity);
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title = "Başarılı",
+                    AlertType = "success",
+                    Message = $"{entity.Name} İsimli Kategori Eklendi."
+                });
+                return RedirectToAction("CategoryList");
             }
             return View(category);
 
         }
         public IActionResult CategoryEdit(int? id)
-        {           
-                if (id == null)
-                {
-                    return NotFound();
-                }
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-                var category = _categoryService.GetByIdWithProducts((int)id);
-                if (category == null)
-                {
-                    return NotFound();
-                }
-                var model = new CategoryModel()
-                {
-                    CategoryId = category.CategoryId,
-                    Name = category.Name,
-                    Url = category.Url,
-                    Products = category.ProductCategories.Select(x => x.Product).ToList()
-                };
+            var category = _categoryService.GetByIdWithProducts((int)id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            var model = new CategoryModel()
+            {
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+                Url = category.Url,
+                Products = category.ProductCategories.Select(x => x.Product).ToList()
+            };
 
-                return View(model);
-            
-            
+            return View(model);
+
+
         }
         [HttpPost]
         public IActionResult CategoryEdit(CategoryModel model)
@@ -238,10 +269,10 @@ namespace ShopApp.WEBUI.Controllers
             return RedirectToAction("CategoryList");
         }
         [HttpPost]
-        public IActionResult DeleteFromCategory(int ProductId,int CategoryId)
+        public IActionResult DeleteFromCategory(int ProductId, int CategoryId)
         {
-            _categoryService.DeleteFromCategory(ProductId,CategoryId);
-            return Redirect("/admin/categories/"+CategoryId);
+            _categoryService.DeleteFromCategory(ProductId, CategoryId);
+            return Redirect("/admin/categories/" + CategoryId);
         }
     }
 }

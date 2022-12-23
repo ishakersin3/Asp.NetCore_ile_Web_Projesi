@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CKEditor" Version="3.6.4" />
     <PackageReference Include="jQuery.Validation" Version="1.19.5" />
     <PackageReference Include="jQuery.Validation.Unobtrusive" Version="2.0.20710" />
   </ItemGroup>

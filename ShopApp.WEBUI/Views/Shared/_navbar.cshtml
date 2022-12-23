@@ -5,19 +5,46 @@
             <li class="nav-item">
                 <a class="nav-link" href="/products">Products</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="">Cart</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="">Orders</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="~/admin/products">Admin Products</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="~/admin/categories">Admin Categories</a>
-            </li>                      
-        </ul>       
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="">Cart</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="~/admin/products">Admin Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="~/admin/categories">Admin Categories</a>
+                </li>
+            }
+        </ul>
+
+
+        <ul class="navbar-nav ml-auto">
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="/account/manage">@User.Identity.Name</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/account/logout">Logout</a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="/account/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/account/register">Register</a>
+                </li>
+            }
+        </ul>
     </div>
 </div>
 
