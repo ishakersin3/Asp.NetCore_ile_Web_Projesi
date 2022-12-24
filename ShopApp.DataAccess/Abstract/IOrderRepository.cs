@@ -1,4 +1,5 @@
-﻿using ShopApp.Entity;
+﻿using shopapp.entity;
+using ShopApp.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
