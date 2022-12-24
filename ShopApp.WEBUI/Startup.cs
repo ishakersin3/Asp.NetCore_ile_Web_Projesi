@@ -70,9 +70,11 @@ namespace ShopApp.WEBUI
 
             services.AddScoped<IProductRepository, EfCoreProductRepository>();          
             services.AddScoped<ICategoryRepository, EfCoreCategoryRepository>();
+            services.AddScoped<ICartRepository, EfCoreCartRepository>();
 
             services.AddScoped<IProductService, ProductManager>();
             services.AddScoped<ICategoryService, CategoryManager>();
+            services.AddScoped<ICartService, CartManager>();
 
             services.AddScoped<IEmailSender, SmtpEmailSender>(i => new SmtpEmailSender(
                 _configuration["EmailSender:Host"],
@@ -101,6 +103,30 @@ namespace ShopApp.WEBUI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                   name: "cart",
+                   pattern: "cart",
+                   defaults: new { controller = "Cart", Action = "Index" }
+                   );
+
+                endpoints.MapControllerRoute(
+                   name: "adminroles",
+                   pattern: "admin/role/list",
+                   defaults: new { controller = "Admin", Action = "RoleList" }
+                   );
+
+                endpoints.MapControllerRoute(
+                   name: "adminrolecreate",
+                   pattern: "admin/role/create",
+                   defaults: new { controller = "Admin", Action = "RoleCreate" }
+                   );
+
+                endpoints.MapControllerRoute(
+                  name: "adminroleedit",
+                  pattern: "admin/role/{id?}",
+                  defaults: new { controller = "Admin", Action = "RoleEdit" }
+                  );
+
                 endpoints.MapControllerRoute(
                    name: "adminproducts",
                    pattern: "admin/products",

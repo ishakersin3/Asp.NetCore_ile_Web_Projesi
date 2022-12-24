@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Framework;
 using Newtonsoft.Json;
+using ShopApp.Business.Abstract;
 using ShopApp.WEBUI.EmailServices;
 using ShopApp.WEBUI.Extensions;
 using ShopApp.WEBUI.Identity;
@@ -17,12 +18,13 @@ namespace ShopApp.WEBUI.Controllers
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
         private IEmailSender _emailSender;
-
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IEmailSender emailSender)
+        private ICartService _cartService;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IEmailSender emailSender, ICartService cartService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _cartService = cartService;
         }
 
         public IActionResult Login(string returnUrl = null)
@@ -128,6 +130,7 @@ namespace ShopApp.WEBUI.Controllers
                 var result = await _userManager.ConfirmEmailAsync(user, token);
                 if (result.Succeeded)
                 {
+                    _cartService.InitializeCart(user.Id);
                     TempData.Put("message", new AlertMessage()
                     {
                         Title = "Hesabınız Onaylandı.",
@@ -172,8 +175,14 @@ namespace ShopApp.WEBUI.Controllers
             });
 
             //email
-            await _emailSender.SendEmailAsync(email, "Reset Password", $"Paralonızı Yebilemek İçin Linke <a href='https://localhost:44329{url}'>Tıklayınız</a>");
-            return View();
+            await _emailSender.SendEmailAsync(email, "Reset Password", $"Paralonızı Yenilemek İçin Linke <a href='https://localhost:44329{url}'>Tıklayınız</a>");
+            TempData.Put("message", new AlertMessage()
+            {
+                Title = "Başarılı.",
+                AlertType = "success",
+                Message = "Şifre Yenileme Bağlantısı Mail Olarak Gönderildi."
+            });
+            return RedirectToAction("Login","Account");
         }
         public IActionResult ResetPassword(string userId, string token)
         {
@@ -204,6 +213,12 @@ namespace ShopApp.WEBUI.Controllers
             var result = await _userManager.ResetPasswordAsync(user, model.Token,model.Password);
             if (result.Succeeded)
             {
+                TempData.Put("message", new AlertMessage()
+                {
+                    Title = "Başarılı.",
+                    AlertType = "success",
+                    Message = "Şifreniz Başarıyla Güncellendi"
+                });
                 return RedirectToAction("Login","Account");
             }
             return View(model);
