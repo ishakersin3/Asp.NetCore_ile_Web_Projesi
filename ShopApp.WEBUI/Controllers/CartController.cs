@@ -156,7 +156,7 @@ namespace ShopApp.WEBUI.Controllers
 
                 orderlistModel.Add(ordermodel);
             }
-            return View("Orders",orders);
+            return View("Orders", orderlistModel);
         }
 
         private void ClearCart(int cartId)
